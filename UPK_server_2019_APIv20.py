@@ -126,6 +126,10 @@ averaged_measurements_buffer_for_disk = dict()
 averaged_measurements_buffer_for_disk['is_ready'] = True
 averaged_measurements_buffer_for_disk['data'] = dict()
 
+averaged_measurements_buffer_for_dash = dict()
+averaged_measurements_buffer_for_dash['is_ready'] = True
+averaged_measurements_buffer_for_dash['data'] = dict()
+
 raw_measurements_buffer_for_disk = dict()
 raw_measurements_buffer_for_disk['is_ready'] = True
 raw_measurements_buffer_for_disk['data'] = dict()
@@ -583,7 +587,7 @@ async def wls_to_measurements_coroutine():
 
 async def averaging_measurements_coroutine():
     """усреднение измерений"""
-    global measurements_buffer, averaged_measurements_buffer_for_OSM
+    global measurements_buffer, averaged_measurements_buffer_for_OSM, averaged_measurements_buffer_for_disk, averaged_measurements_buffer_for_dash
 
     cur_measurements = list()
     averaged_block_end_time = None
@@ -713,6 +717,14 @@ async def averaging_measurements_coroutine():
                 finally:
                     averaged_measurements_buffer_for_disk['is_ready'] = True
 
+                while not averaged_measurements_buffer_for_dash['is_ready']:
+                    await asyncio.sleep(asyncio_pause_sec)
+                try:
+                    averaged_measurements_buffer_for_dash['is_ready'] = False
+                    averaged_measurements_buffer_for_dash['data'][averaged_block_end_time] = cur_measurements
+                finally:
+                    averaged_measurements_buffer_for_dash['is_ready'] = True
+
             finally:
                 pass
     finally:
@@ -734,6 +746,8 @@ async def save_measurements_coroutine(buffer, file_type='avg'):
         file_prefix = '_raw'
     elif file_type == 'wls':
         file_prefix = '_wls'
+    elif file_type == 'dash':
+        file_prefix = '_dash'
     else:
         raise Exception(ValueError, 'Value of file_type is unexpected')
 
@@ -776,6 +790,8 @@ async def save_measurements_coroutine(buffer, file_type='avg'):
                 try:
                     data_arch_file_name = datetime.datetime.utcfromtimestamp(timestamp_msg).strftime(
                         f'%Y%m%d%H{file_prefix}.txt')
+                    if file_type == 'dash':
+                        data_arch_file_name = 'data_for_dash.txt'
 
                     # add header if needed
                     if file_type == 'raw' and not Path(data_arch_file_name).is_file():
@@ -784,7 +800,7 @@ async def save_measurements_coroutine(buffer, file_type='avg'):
                             header += f'{device.name}_F1, N\t{device.name}_F2, N\t'
                         send_msg = header[:-1] + '\n' + send_msg
 
-                    if file_type == 'avg' and not Path(data_arch_file_name).is_file():
+                    if (file_type == 'avg' or file_type == 'dash') and not Path(data_arch_file_name).is_file():
                         header = 'Timestamp, s\t'
                         for device in devices:
                             header += f'{device.name}_measurements\t'
@@ -1064,13 +1080,16 @@ if __name__ == "__main__":
     loop.create_task(send_avg_measurements_coroutine())
 
     # запись усредненных измерений на диск
-    loop.create_task(save_measurements_coroutine(averaged_measurements_buffer_for_disk, file_type='avg'))
+    # loop.create_task(save_measurements_coroutine(averaged_measurements_buffer_for_disk, file_type='avg'))
+
+    # запись усредненных измерений на диск для отображения на Dash-сервере
+    loop.create_task(save_measurements_coroutine(averaged_measurements_buffer_for_dash, file_type='dash'))
 
     # запись неусредненных измерений F1, F2 на диск
     # loop.create_task(save_measurements_coroutine(raw_measurements_buffer_for_disk, file_type='raw'))
 
     # запись длин волн на диск
-    loop.create_task(save_measurements_coroutine(wls_buffer_for_disk, file_type='wls'))
+    # loop.create_task(save_measurements_coroutine(wls_buffer_for_disk, file_type='wls'))
 
     # метрики работы функций
     loop.create_task(heart_rate())

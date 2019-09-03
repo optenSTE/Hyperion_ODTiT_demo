@@ -6,7 +6,13 @@ __pycache__/
 
 1/
 
+build/
 
+dist/
+
+/*.txt
+
+/*.log
 /ServerPC_emulation.py
 
 /instrument_description.py
