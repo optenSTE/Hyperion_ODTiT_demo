@@ -1,0 +1,68 @@
+{
+    "version": "0.2",
+    "IP_address": "10.0.0.55",
+    "LaserScanSpeed": 10,
+    "SampleRate": 2,
+    "DetectionSettings": "",
+    "devices": [
+        {
+            "version": "0.2",
+            "ID": "ODTiT-7-0",
+            "Name": "ODTiT-7-0",
+            "Sensor3110_1": {
+                "ID": "A102069",
+                "type": "os3110",
+                "name": "sA102069",
+                "WL0": 1560250.762,
+                "T0": 22.2,
+                "FG": 0.89,
+                "CTET": 16.6,
+                "Pmin": -60,
+                "Pmax": 65535
+            },
+            "Sensor3110_2": {
+                "ID": "A10218F",
+                "type": "os3110",
+                "name": "sA10218F",
+                "WL0": 1568281.44,
+                "T0": 22.2,
+                "FG": 0.89,
+                "CTET": 16.6,
+                "Pmin": -60,
+                "Pmax": 65535
+            },
+            "Sensor4100": {
+                "ID": "A101BC4",
+                "type": "os4100",
+                "name": "tA101BC4",
+                "WL0": 1547967.342,
+                "T0": 22.2,
+                "ST": 1.833e-05,
+                "Pmin": -60,
+                "Pmax": 65535
+            },
+            "x55_channel": 1,
+            "x55_SoL_compensation": -959.0,
+            "CTES": 16.615,
+            "Distance": 0.5,
+            "E": 215092125800.0,
+            "Asize": 16.0,
+            "Bsize": 15.0,
+            "Tmin": -30.0,
+            "Tmax": 50.0,
+            "Fmin": 100.0,
+            "Fmax": 3600.0,
+            "Freserve": 1000.0,
+            "SpanRopeDiametr": 11.3,
+            "SpanRopeLen": 159.0,
+            "SpanRopeDensity": 0.417,
+            "SpanRopeEJ": 5.04,
+            "Bending_sensivity": 3.27,
+            "Fmodel_F0": 258,
+            "Fmodel_F1": -0.2,
+            "Fmodel_F2": 0,
+            "ICEmodel_I1": 22,
+            "ICEmodel_I2": 1.0138
+        }
+    ]
+}
