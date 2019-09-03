@@ -406,7 +406,16 @@ async def instrument_init():
     # запускаем стриминг пиков
     if not peak_stream:
         peak_stream = hyperion.HCommTCPPeaksStreamer(instrument_ip, loop, queue)
-        await peak_stream.stream_data()
+
+        success = False
+        while not success:
+            try:
+                await peak_stream.stream_data()
+                success = True
+            except TimeoutError:
+                logging.debug('TimeoutError: [Errno 10060] Connect call failed')
+                continue
+
 
 
 def return_error(e):

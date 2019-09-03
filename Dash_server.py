@@ -22,7 +22,7 @@ import pandas as pd
 address, port = '127.0.0.1', 8052
 
 # интервал обновления данных
-update_interval_sec = .20
+update_interval_sec = 0.45
 
 # ширина графика, сек
 plot_width_sec = 60
@@ -61,6 +61,7 @@ app.layout = html.Div(
         )
     ])
 )
+app.title = u'ОАИСКГН'
 
 
 # обновление графика
@@ -103,14 +104,6 @@ def update_graph_scatter(n):
     # из последних измерений сформируем таблицу для графика
     traces = list()
 
-    # количество точек на графике
-    points_on_plot = int(plot_width_sec / update_interval_sec)
-
-    # остальное удаляем
-    while len(X) > points_on_plot:
-        del X[0]
-        del Y[0]
-
     now = int(time.time()) * 1000
     now = max(X)+5000
 
@@ -127,6 +120,13 @@ def update_graph_scatter(n):
     # n_sec = .1
     # range_x = [math.floor((now - plot_width_sec * 1000) / n_sec) * n_sec, math.ceil(now / n_sec) * n_sec]
     range_x = [(now - plot_width_sec * 1000), now]
+
+    # остальное удаляем
+    for ts in X:
+        if not range_x[0]<ts<range_x[1]:
+            del X[0]
+            del Y[0]
+
     range_y1 = [math.floor(min(Y) / 10.0) * 10.0, math.ceil(max(Y) / 10.0) * 10.0]
     if range_y1[0] > min(tension_range):
         range_y1[0] = min(tension_range)
@@ -134,8 +134,8 @@ def update_graph_scatter(n):
         range_y1[1] = max(tension_range)
 
     # debug output of X and Y values limits
-    if 0:
-        print(f'X axe: {min(traces[0].x)} - {max(traces[0].x)}, Y axe: {min(traces[0].y)} - {max(traces[0].y)}')
+    if 1:
+        print(f'ZeroCalibrationValue {zerocalibration_value}, Points: {len(X)}, X limits: {min(traces[0].x)} - {max(traces[0].x)}, Y limit: {min(traces[0].y)} - {max(traces[0].y)}, Y summ {sum(traces[0].y)}')
 
 
     return {'data': traces,
