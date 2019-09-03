@@ -71,6 +71,7 @@ def update_graph_scatter(n):
 
     in_file_name = 'data_for_dash.txt'
 
+    # обновление данных из файла
     try:
         # read new data from txt
         pd_frame = pd.read_csv(in_file_name, sep='\t')
@@ -92,6 +93,8 @@ def update_graph_scatter(n):
             tension_minus_zerovalue.append(cur_tension - zerocalibration_value)
         data['tension'] += tension_minus_zerovalue
     except FileNotFoundError:
+        pass
+    except PermissionError:
         pass
 
     X = data['time']
