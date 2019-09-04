@@ -138,7 +138,7 @@ def update_graph_scatter(n):
         range_y1[1] = max(tension_range)
 
     # debug output of X and Y values limits
-    if 1:
+    if 0:
         print(f'ZeroCalibrationValue {zerocalibration_value}, Points: {len(X)}, X limits: {min(traces[0].x)} - {max(traces[0].x)}, Y limit: {min(traces[0].y)} - {max(traces[0].y)}, Y summ {sum(traces[0].y)}')
 
 
