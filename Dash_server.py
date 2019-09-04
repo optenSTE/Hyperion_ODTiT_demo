@@ -97,6 +97,10 @@ def update_graph_scatter(n):
         pass
     except PermissionError:
         pass
+    except KeyError:
+        pass
+    except:
+        pass
 
     X = data['time']
     Y = data['tension']
